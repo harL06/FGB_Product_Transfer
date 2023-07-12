@@ -12,18 +12,29 @@ title = list(df["EN_Title_Short"])
 sku = list(df["SKU"])
 ean = list(df["EAN"])
 
+productEANS = []
 
-repeat = True
-while repeat == True:
-    findEAN = int(input("Enter the EAN of the item you would like to upload:\n> "))
-    if findEAN in ean:
-        repeat == False
-        break
-    else:
-        print("Item not found")
+findEAN = 123
 
-print(df.loc[ean.index(findEAN), "EN_Title_Short"])
-# print(df.loc[sku.index(findEAN)])
+print("DATA REFORMATER FOR WORDPRESS\nEnter each EAN, then hit ENTER.\n\nWhen all items are entered, submit a 0.\n")
+
+while findEAN != 0:
+    repeat = True
+    while repeat == True:
+        findEAN = int(input("Enter the EAN of the item you would like to upload:\n> "))
+        if findEAN == 0:
+            break
+        
+        elif findEAN in ean:
+            repeat == False
+            print(df.loc[ean.index(findEAN), "EN_Title_Short"])
+            productEANS.append(findEAN)
+            break
+        else:
+            print("Item not found")
+
+
+
 
 
 
@@ -37,14 +48,16 @@ price = []
 weight = []
 image = []
 
-titles.append(df.loc[ean.index(findEAN), "EN_Title_Short"])
-descShort.append(df.loc[ean.index(findEAN), "EN_Description_Short"])
-descLong.append(df.loc[ean.index(findEAN), "EN_Description_Long"])
-newSKU.append(df.loc[ean.index(findEAN), "SKU"])
-newEAN.append(df.loc[ean.index(findEAN), "EAN"])
-price.append(df.loc[ean.index(findEAN), "Price"])
-weight.append(int(df.loc[ean.index(findEAN), "Weight"])/1000)
-image.append(df.loc[ean.index(findEAN), "Images"])
+for uniqueEAN in productEANS:
+
+    titles.append(df.loc[ean.index(uniqueEAN), "EN_Title_Short"])
+    descShort.append(df.loc[ean.index(uniqueEAN), "EN_Description_Short"])
+    descLong.append(df.loc[ean.index(uniqueEAN), "EN_Description_Long"])
+    newSKU.append(df.loc[ean.index(uniqueEAN), "SKU"])
+    newEAN.append(df.loc[ean.index(uniqueEAN), "EAN"])
+    price.append(df.loc[ean.index(uniqueEAN), "Price"])
+    weight.append(int(df.loc[ean.index(uniqueEAN), "Weight"])/1000)
+    image.append(df.loc[ean.index(uniqueEAN), "Images"])
 
 
 if not os.path.exists('Correctly_Formatted-WP.csv'):
