@@ -15,6 +15,7 @@ categories = list(df["EN_Category_1"])
 categories2 = list(df["EN_Category_2"])
 categories3 = list(df["EN_Category_3"])
 variant = list(df["EN_Variant"])
+stockLevel = list(df["Stock_Level"])
 
 
 
@@ -94,7 +95,10 @@ MetaColour = []
 Size = []
 MetaSize = []
 parentSKU = []
-
+stockLevel = []
+dataColour = []
+dataSize = []
+productType = []
 
 usedMatrixTitles = []
 
@@ -123,6 +127,10 @@ for uniqueTitle in productTitles:
         Size.append("")
         MetaSize.append("")
         parentSKU.append("")
+        stockLevel.append(df.loc[title.index(uniqueTitle), "Stock_Level"])
+        dataColour.append("")
+        dataSize.append("")
+        productType.append("simple")
     
     elif uniqueTitle not in usedMatrixTitles:
 
@@ -130,7 +138,7 @@ for uniqueTitle in productTitles:
         usedMatrixTitles.append(uniqueTitle)
         
 
-        newParentSKU = "PRNT-" + (df.loc[title.index(uniqueTitle), "SKU"])[0:3]
+        newParentSKU = "PRNT-" + str((df.loc[title.index(uniqueTitle), "SKU"]))[0:3]
         print(newParentSKU)
         
         attribute = (((variant[title.index(uniqueTitle)]).split(" : "))[0])
@@ -158,6 +166,10 @@ for uniqueTitle in productTitles:
             price.append(df.loc[indice, "Price"])
             weight.append(int(df.loc[indice, "Weight"])/1000)
             parentSKU.append(newParentSKU)
+            stockLevel.append(df.loc[indice, "Stock_Level"])
+            dataColour.append("")
+            dataSize.append("")
+            productType.append("")
             
             if attribute.lower() == "color":
                 
@@ -178,7 +190,8 @@ for uniqueTitle in productTitles:
         print("MATRIX:", uniqueTitle)
         
         parentSKU.append("")
-        
+        stockLevel.append("")
+        productType.append("variable")
         titles.append(df.loc[title.index(uniqueTitle), "EN_Title_Short"])
         descShort.append(df.loc[title.index(uniqueTitle), "EN_Description_Short"])
         descLong.append(df.loc[title.index(uniqueTitle), "EN_Description_Long"])
@@ -193,6 +206,9 @@ for uniqueTitle in productTitles:
         
         colourAString = "|".join(colourOptions)
         sizeAString = "|".join(sizeOptions)
+        
+        
+        
 
         
         if attribute.lower() == "color":
@@ -200,12 +216,14 @@ for uniqueTitle in productTitles:
             MetaColour.append("")
             Size.append("")
             MetaSize.append("")
+            dataColour.append("0|1|1")
             
         elif attribute.lower() == "size":
             Colour.append("")
             MetaColour.append("")
             Size.append(sizeAString)
             MetaSize.append("")
+            dataSize.append("0|1|1")
         
             
     
@@ -225,7 +243,7 @@ if not os.path.exists('Correctly_Formatted_WP.csv'):
                 
               
 
-                columnTitles = ["parent_sku","sku", "post_title", "post_excerpt", "post_content", "post_status", "regular_price", "sale_price", "stock_status", "stock", "manage_stock", "weight", "Images", "tax:product_type", "tax:product_cat", "tax:product_tag", "meta:attribute_color", "attribute:color", "attribute_data:color", "attribute_default:color", "meta:attribute_size", "attribute:size"]
+                columnTitles = ["parent_sku","sku", "post_title", "post_excerpt", "post_content", "post_status", "regular_price", "sale_price", "stock_status", "stock", "manage_stock", "weight", "Images", "tax:product_type", "tax:product_cat", "tax:product_tag", "meta:attribute_color", "attribute:color", "attribute_data:color", "attribute_default:color", "meta:attribute_size", "attribute:size", "attribute_data:Size"]
                 writer.writerow(columnTitles)  
 
                 #writer.writerow(None)
@@ -251,9 +269,13 @@ while True:
                     productCategory = productCategory +"|"+ str(category2[i])
                     if str(category3[i]) != "nan":
                         productCategory = productCategory +"|"+ str(category3[i])
-                newRow = [parentSKU[i], newSKU[i], titles[i], descShort[i], descLong[i], "", price[i], "", "", "", "", weight[i], image[i], "", productCategory, "", MetaColour[i], Colour[i], "", "", MetaSize[i], Size[i]]
-                
-                writer.writerow(newRow)  
+                if stockLevel[i] == "": 
+                    newRow = [parentSKU[i], newSKU[i], titles[i], descShort[i], descLong[i], "", price[i], "", "", "", "", weight[i], image[i], productType[i], productCategory, "", MetaColour[i], Colour[i], dataColour[i], "", MetaSize[i], Size[i], dataSize[i]]
+                    writer.writerow(newRow)
+                    
+                elif int(stockLevel[i]) > 0:
+                    newRow = [parentSKU[i], newSKU[i], titles[i], descShort[i], descLong[i], "", price[i], "", "", "", "", weight[i], image[i], productType[i], productCategory, "", MetaColour[i], Colour[i], dataColour[i], "", MetaSize[i], Size[i], dataSize[i]]
+                    writer.writerow(newRow)
 
             #writer.writerow(None)
             
