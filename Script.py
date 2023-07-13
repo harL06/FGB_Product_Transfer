@@ -14,6 +14,7 @@ ean = list(df["EAN"])
 categories = list(df["EN_Category_1"])
 categories2 = list(df["EN_Category_2"])
 categories3 = list(df["EN_Category_3"])
+variant = list(df["EN_Variant"])
 
 
 
@@ -88,22 +89,129 @@ image = []
 category1 = []
 category2 = []
 category3 = []
+Colour = []
+MetaColour = []
+Size = []
+MetaSize = []
+parentSKU = []
+
+
+usedMatrixTitles = []
+
+i = 0
+
+
 
 for uniqueTitle in productTitles:
 #     if np.isnan(uniqueTitle) == False:
-    print(uniqueTitle)
+    if variant[title.index(uniqueTitle)] == "Default":
+        print(uniqueTitle)
 
-    titles.append(df.loc[title.index(uniqueTitle), "EN_Title_Short"])
-    descShort.append(df.loc[title.index(uniqueTitle), "EN_Description_Short"])
-    descLong.append(df.loc[title.index(uniqueTitle), "EN_Description_Long"])
-    newSKU.append(df.loc[title.index(uniqueTitle), "SKU"])
-    newEAN.append(df.loc[title.index(uniqueTitle), "EAN"])
-    price.append(df.loc[title.index(uniqueTitle), "Price"])
-    weight.append(int(df.loc[title.index(uniqueTitle), "Weight"])/1000)
-    image.append(df.loc[title.index(uniqueTitle), "Images"])
-    category1.append(df.loc[title.index(uniqueTitle), "EN_Category_1"])
-    category2.append(df.loc[title.index(uniqueTitle), "EN_Category_2"])
-    category3.append(df.loc[title.index(uniqueTitle), "EN_Category_3"])
+        titles.append(df.loc[title.index(uniqueTitle), "EN_Title_Short"])
+        descShort.append(df.loc[title.index(uniqueTitle), "EN_Description_Short"])
+        descLong.append(df.loc[title.index(uniqueTitle), "EN_Description_Long"])
+        newSKU.append(df.loc[title.index(uniqueTitle), "SKU"])
+        newEAN.append(df.loc[title.index(uniqueTitle), "EAN"])
+        price.append(df.loc[title.index(uniqueTitle), "Price"])
+        weight.append(int(df.loc[title.index(uniqueTitle), "Weight"])/1000)
+        image.append(df.loc[title.index(uniqueTitle), "Images"])
+        category1.append(df.loc[title.index(uniqueTitle), "EN_Category_1"])
+        category2.append(df.loc[title.index(uniqueTitle), "EN_Category_2"])
+        category3.append(df.loc[title.index(uniqueTitle), "EN_Category_3"])
+        Colour.append("")
+        MetaColour.append("")
+        Size.append("")
+        MetaSize.append("")
+        parentSKU.append("")
+    
+    elif uniqueTitle not in usedMatrixTitles:
+
+        
+        usedMatrixTitles.append(uniqueTitle)
+        
+
+        newParentSKU = "PRNT-" + (df.loc[title.index(uniqueTitle), "SKU"])[0:3]
+        print(newParentSKU)
+        
+        attribute = (((variant[title.index(uniqueTitle)]).split(" : "))[0])
+        colourOptions = []
+        sizeOptions = []
+        print(attribute)
+        indices = [i for i, x in enumerate(title) if x == uniqueTitle]
+        
+        
+        for indice in indices:
+            
+            # This is where you should append child item info
+            print(((variant[indice]).split(" : "))[1])
+
+
+            titles.append("")
+            descShort.append("")
+            descLong.append("")
+            image.append("")
+            category1.append(df.loc[title.index(uniqueTitle), "EN_Category_1"])
+            category2.append(df.loc[title.index(uniqueTitle), "EN_Category_2"])
+            category3.append(df.loc[title.index(uniqueTitle), "EN_Category_3"])   
+            newSKU.append(df.loc[indice, "SKU"])
+            newEAN.append(df.loc[indice, "EAN"])
+            price.append(df.loc[indice, "Price"])
+            weight.append(int(df.loc[indice, "Weight"])/1000)
+            parentSKU.append(newParentSKU)
+            
+            if attribute.lower() == "color":
+                
+                Colour.append("")
+                MetaColour.append((variant[indice].split(" : "))[1])
+                Size.append("")
+                MetaSize.append("")
+                colourOptions.append((variant[indice].split(" : "))[1])
+                
+            elif attribute.lower() == "size":
+                Colour.append("")
+                MetaColour.append("")
+                Size.append("")
+                MetaSize.append((variant[indice].split(" : "))[1])
+                sizeOptions.append((variant[indice].split(" : "))[1])
+        
+        # This is where you should append parent item info
+        print("MATRIX:", uniqueTitle)
+        
+        parentSKU.append("")
+        
+        titles.append(df.loc[title.index(uniqueTitle), "EN_Title_Short"])
+        descShort.append(df.loc[title.index(uniqueTitle), "EN_Description_Short"])
+        descLong.append(df.loc[title.index(uniqueTitle), "EN_Description_Long"])
+        newSKU.append(newParentSKU)
+        newEAN.append(df.loc[title.index(uniqueTitle), "EAN"])
+        price.append(df.loc[title.index(uniqueTitle), "Price"])
+        weight.append(int(df.loc[title.index(uniqueTitle), "Weight"])/1000)
+        image.append(df.loc[title.index(uniqueTitle), "Images"])
+        category1.append(df.loc[title.index(uniqueTitle), "EN_Category_1"])
+        category2.append(df.loc[title.index(uniqueTitle), "EN_Category_2"])
+        category3.append(df.loc[title.index(uniqueTitle), "EN_Category_3"])
+        
+        colourAString = "|".join(colourOptions)
+        sizeAString = "|".join(sizeOptions)
+
+        
+        if attribute.lower() == "color":
+            Colour.append(colourAString)
+            MetaColour.append("")
+            Size.append("")
+            MetaSize.append("")
+            
+        elif attribute.lower() == "size":
+            Colour.append("")
+            MetaColour.append("")
+            Size.append(sizeAString)
+            MetaSize.append("")
+        
+            
+    
+    i += 1
+    
+    
 
 
 
@@ -117,7 +225,7 @@ if not os.path.exists('Correctly_Formatted_WP.csv'):
                 
               
 
-                columnTitles = ["parent_sku","sku", "post_title", "post_excerpt", "post_content", "post_status", "regular_price", "sale_price", "stock_status", "stock", "manage_stock", "weight", "Images", "tax:product_type", "tax:product_cat", "tax:product_tag", "meta:attribute_color", "attribute:color", "attribute_data:color", "attribute_default:color"]
+                columnTitles = ["parent_sku","sku", "post_title", "post_excerpt", "post_content", "post_status", "regular_price", "sale_price", "stock_status", "stock", "manage_stock", "weight", "Images", "tax:product_type", "tax:product_cat", "tax:product_tag", "meta:attribute_color", "attribute:color", "attribute_data:color", "attribute_default:color", "meta:attribute_size", "attribute:size"]
                 writer.writerow(columnTitles)  
 
                 #writer.writerow(None)
@@ -143,7 +251,7 @@ while True:
                     productCategory = productCategory +"|"+ str(category2[i])
                     if str(category3[i]) != "nan":
                         productCategory = productCategory +"|"+ str(category3[i])
-                newRow = ["", newSKU[i], titles[i], descShort[i], descLong[i], "", price[i], "", "", "", "", weight[i], image[i], "", productCategory]
+                newRow = [parentSKU[i], newSKU[i], titles[i], descShort[i], descLong[i], "", price[i], "", "", "", "", weight[i], image[i], "", productCategory, "", MetaColour[i], Colour[i], "", "", MetaSize[i], Size[i]]
                 
                 writer.writerow(newRow)  
 
