@@ -19,7 +19,7 @@ stockLevel = list(df["Stock_Level"])
 
 
 
-inputOption = input("Would you like to input by EAN or by Category? (EAN/Category):\n> ").lower()
+inputOption = input("Would you like to input by EAN or by Category or by SKU? (EAN/Category/SKU):\n> ").lower()
 if inputOption == "ean":
 
     productEANS = []
@@ -41,7 +41,32 @@ if inputOption == "ean":
             else:
                 print("Item not found")
                 
-                
+
+elif inputOption == "sku":
+
+    productSKU = []
+    findSKU = "123"
+    print("DATA REFORMATER FOR WORDPRESS\nEnter each SKU, then hit ENTER.\n\nWhen all items are entered, submit a 0.\n")
+    productTitles = []
+    while findSKU != "0":
+        repeat = True
+        #print(sku)
+        while repeat == True:
+            findSKU = str(input("Enter the SKU of the item you would like to upload:\n> "))
+            if findSKU == "0":
+                break
+            
+            
+            elif findSKU in sku:
+                repeat == False
+                #print(df.loc[ean.index(findEAN), "EN_Title_Short"])
+                print((df.loc[sku.index(findSKU), "EN_Title_Short"]))
+                productTitles.append((df.loc[sku.index(findSKU), "EN_Title_Short"]))
+                break
+            else:
+                print("Item not found")
+
+
 elif inputOption == "category":
     repeat = True
     while repeat == True:
@@ -204,20 +229,28 @@ for uniqueTitle in productTitles:
         category2.append(df.loc[title.index(uniqueTitle), "EN_Category_2"])
         category3.append(df.loc[title.index(uniqueTitle), "EN_Category_3"])
         
+#         Colour.append("")
+#         MetaColour.append("")
+#         Size.append("")
+#         MetaSize.append("")
+#         dataSize.append("")
+#         dataColour.append("")
+        
         colourAString = "|".join(colourOptions)
         sizeAString = "|".join(sizeOptions)
         
+        print(len(newSKU), len(newEAN), len(price), len(weight), len(image), len(category1), len(category2), len(category3))
+
         
         
 
-        
+        print(attribute.lower())
         if attribute.lower() == "color":
             Colour.append(colourAString)
             MetaColour.append("")
             Size.append("")
             MetaSize.append("")
             dataColour.append("0|1|1")
-            
             dataSize.append("")
             
         elif attribute.lower() == "size":
@@ -227,11 +260,15 @@ for uniqueTitle in productTitles:
             MetaSize.append("")
             dataSize.append("0|1|1")
             dataColour.append("")
+            
+        
+        
         
             
     
     i += 1
     
+    print("NEW", len(Colour), len(MetaColour), len(Size), len(MetaSize), len(dataColour), len(dataSize))
     
 
 
@@ -273,11 +310,11 @@ while True:
                     if str(category3[i]) != "nan":
                         productCategory = productCategory +"|"+ str(category3[i])
                 if stockLevel[i] == "": 
-                    newRow = [parentSKU[i], newSKU[i], titles[i], descShort[i], descLong[i], "publish", price[i], "", "instock", "", "", weight[i], image[i], productType[i], productCategory, "", MetaColour[i], Colour[i], dataColour[i], "", MetaSize[i], Size[i], dataSize[i]]
+                    newRow = [parentSKU[i], newSKU[i], titles[i], descShort[i], descLong[i], "publish", price[i], (price[i] * .8), "instock", "", "", weight[i], image[i], productType[i], productCategory, "", MetaColour[i], Colour[i], dataColour[i], "", MetaSize[i], Size[i], dataSize[i]]
                     writer.writerow(newRow)
                     
                 elif int(stockLevel[i]) > 0:
-                    newRow = [parentSKU[i], newSKU[i], titles[i], descShort[i], descLong[i], "publish", price[i], "", "instock", "", "", weight[i], image[i], productType[i], productCategory, "", MetaColour[i], Colour[i], dataColour[i], "", MetaSize[i], Size[i], dataSize[i]]
+                    newRow = [parentSKU[i], newSKU[i], titles[i], descShort[i], descLong[i], "publish", price[i], (price[i] * .8), "instock", "", "", weight[i], image[i], productType[i], productCategory, "", MetaColour[i], Colour[i], dataColour[i], "", MetaSize[i], Size[i], dataSize[i]]
                     writer.writerow(newRow)
 
             #writer.writerow(None)
