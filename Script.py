@@ -129,7 +129,8 @@ usedMatrixTitles = []
 
 i = 0
 
-
+print("\n")
+print("Import and update these items on WooComerce Products with their matching new SKUs:\n")
 
 for uniqueTitle in productTitles:
 #     if np.isnan(uniqueTitle) == False:
@@ -167,11 +168,22 @@ for uniqueTitle in productTitles:
         
         
         attribute = (((variant[title.index(uniqueTitle)]).split(" : "))[0])
+        
+        #print(attribute)
+        if "," in attribute.lower() and "color" in attribute.lower() and "size" in attribute.lower():
+            #print("TEST")
+            #print("ATTRIBUTE:", (attribute.split(","))[0])
+            doubleAtt1 = (attribute.split(","))[0]
+            #print("ATTRIBUTE:", (attribute.split(","))[1])
+            doubleAtt2 = (attribute.split(","))[1]
+            attribute = "both"
         colourOptions = []
         sizeOptions = []
         #print(attribute)
         indices = [i for i, x in enumerate(title) if x == uniqueTitle]
         
+        
+
         
         for indice in indices:
             
@@ -203,6 +215,7 @@ for uniqueTitle in productTitles:
                 Size.append("")
                 MetaSize.append("")
                 colourOptions.append((variant[indice].split(" : "))[1])
+                #sizeOptions.append("")
                 
             elif attribute.lower() == "size":
                 Colour.append("")
@@ -210,6 +223,33 @@ for uniqueTitle in productTitles:
                 Size.append("")
                 MetaSize.append((variant[indice].split(" : "))[1])
                 sizeOptions.append((variant[indice].split(" : "))[1])
+                #colourOptions.append("")
+            
+            elif attribute.lower() == "both":
+                
+
+                Colour.append("")
+                
+                doubleAtt1 = (variant[indice]).split(",")[0]
+                doubleAtt1 = doubleAtt1.strip('"')
+                doubleAtt1 = (doubleAtt1).split(":")[1]
+                doubleAtt1 = doubleAtt1.strip(' ')
+                #print(doubleAtt1)
+                
+                MetaColour.append(doubleAtt1)
+                colourOptions.append(doubleAtt1)
+                
+                Size.append("")
+                
+                
+                doubleAtt2 = (variant[indice]).split(",")[1]
+                doubleAtt2 = doubleAtt2.strip('"')
+                doubleAtt2 = (doubleAtt2).split(":")[1]
+                doubleAtt2 = doubleAtt2.strip(' ')
+                #print(doubleAtt2)
+                
+                MetaSize.append(doubleAtt2)
+                sizeOptions.append(doubleAtt2)
         
         # This is where you should append parent item info
         print("ITEM:", uniqueTitle, "SKU:", newParentSKU)
@@ -238,13 +278,14 @@ for uniqueTitle in productTitles:
         
         colourAString = "|".join(colourOptions)
         sizeAString = "|".join(sizeOptions)
+        #print(colourAString, sizeAString)
         
-        print(len(newSKU), len(newEAN), len(price), len(weight), len(image), len(category1), len(category2), len(category3))
+        #print(len(newSKU), len(newEAN), len(price), len(weight), len(image), len(category1), len(category2), len(category3))
 
         
         
 
-        print(attribute.lower())
+        #print(attribute.lower())
         if attribute.lower() == "color":
             Colour.append(colourAString)
             MetaColour.append("")
@@ -261,6 +302,15 @@ for uniqueTitle in productTitles:
             dataSize.append("0|1|1")
             dataColour.append("")
             
+        elif attribute.lower() == "both":
+    
+            Colour.append(colourAString)
+            MetaColour.append("")
+            Size.append(sizeAString)
+            MetaSize.append("")
+            dataColour.append("0|1|1")
+            dataSize.append("0|1|1")
+            
         
         
         
@@ -268,7 +318,7 @@ for uniqueTitle in productTitles:
     
     i += 1
     
-    print("NEW", len(Colour), len(MetaColour), len(Size), len(MetaSize), len(dataColour), len(dataSize))
+    #print("NEW", len(Colour), len(MetaColour), len(Size), len(MetaSize), len(dataColour), len(dataSize))
     
 
 
