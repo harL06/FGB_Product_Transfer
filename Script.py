@@ -15,8 +15,9 @@ categories = list(df["EN_Category_1"])
 categories2 = list(df["EN_Category_2"])
 categories3 = list(df["EN_Category_3"])
 variant = list(df["EN_Variant"])
-stockLevel = list(df["Stock_Level"])
-
+OriginalStockLevel = list(df["Stock_Level"])
+#print(OriginalStockLevel)
+#print(len(OriginalStockLevel))
 
 
 inputOption = input("Would you like to input by EAN or by Category or by SKU? (EAN/Category/SKU):\n> ").lower()
@@ -214,7 +215,9 @@ for uniqueTitle in productTitles:
                 MetaColour.append((variant[indice].split(" : "))[1])
                 Size.append("")
                 MetaSize.append("")
-                colourOptions.append((variant[indice].split(" : "))[1])
+                
+                if int(OriginalStockLevel[indice]) > 0:
+                    colourOptions.append((variant[indice].split(" : "))[1])
                 #sizeOptions.append("")
                 
             elif attribute.lower() == "size":
@@ -222,7 +225,10 @@ for uniqueTitle in productTitles:
                 MetaColour.append("")
                 Size.append("")
                 MetaSize.append((variant[indice].split(" : "))[1])
-                sizeOptions.append((variant[indice].split(" : "))[1])
+                
+                if int(OriginalStockLevel[indice]) > 0:
+                    
+                    sizeOptions.append((variant[indice].split(" : "))[1])
                 #colourOptions.append("")
             
             elif attribute.lower() == "both":
@@ -237,7 +243,7 @@ for uniqueTitle in productTitles:
                 #print(doubleAtt1)
                 
                 MetaColour.append(doubleAtt1)
-                colourOptions.append(doubleAtt1)
+                #colourOptions.append(doubleAtt1)
                 
                 Size.append("")
                 
@@ -247,9 +253,14 @@ for uniqueTitle in productTitles:
                 doubleAtt2 = (doubleAtt2).split(":")[1]
                 doubleAtt2 = doubleAtt2.strip(' ')
                 #print(doubleAtt2)
+                #print(indice, len(OriginalStockLevel))
+                #print(OriginalStockLevel[indice])
                 
                 MetaSize.append(doubleAtt2)
-                sizeOptions.append(doubleAtt2)
+                
+                if int(OriginalStockLevel[indice]) > 0:
+                    colourOptions.append(doubleAtt1)
+                    sizeOptions.append(doubleAtt2)
         
         # This is where you should append parent item info
         print("ITEM:", uniqueTitle, "SKU:", newParentSKU)
@@ -359,12 +370,20 @@ while True:
                     productCategory = productCategory +"|"+ str(category2[i])
                     if str(category3[i]) != "nan":
                         productCategory = productCategory +"|"+ str(category3[i])
-                if stockLevel[i] == "": 
+                if "PRNT" in str(newSKU[i]): 
                     newRow = [parentSKU[i], newSKU[i], titles[i], descShort[i], descLong[i], "publish", price[i], (price[i] * .8), "instock", "", "", weight[i], image[i], productType[i], productCategory, "", MetaColour[i], Colour[i], dataColour[i], "", MetaSize[i], Size[i], dataSize[i]]
+                    writer.writerow(newRow)                
+
+                elif stockLevel[i] == "": 
+                    newRow = [parentSKU[i], newSKU[i], titles[i], descShort[i], descLong[i], "draft", price[i], (price[i] * .77), "instock", "", "", weight[i], image[i], productType[i], productCategory, "", MetaColour[i], Colour[i], dataColour[i], "", MetaSize[i], Size[i], dataSize[i]]
                     writer.writerow(newRow)
                     
                 elif int(stockLevel[i]) > 0:
-                    newRow = [parentSKU[i], newSKU[i], titles[i], descShort[i], descLong[i], "publish", price[i], (price[i] * .8), "instock", "", "", weight[i], image[i], productType[i], productCategory, "", MetaColour[i], Colour[i], dataColour[i], "", MetaSize[i], Size[i], dataSize[i]]
+                    newRow = [parentSKU[i], newSKU[i], titles[i], descShort[i], descLong[i], "publish", price[i], (price[i] * .77), "instock", "", "", weight[i], image[i], productType[i], productCategory, "", MetaColour[i], Colour[i], dataColour[i], "", MetaSize[i], Size[i], dataSize[i]]
+                    writer.writerow(newRow)
+                
+                else:
+                    newRow = [parentSKU[i], newSKU[i], titles[i], descShort[i], descLong[i], "draft", price[i], (price[i] * .77), "instock", "", "", weight[i], image[i], productType[i], productCategory, "", MetaColour[i], Colour[i], dataColour[i], "", MetaSize[i], Size[i], dataSize[i]]
                     writer.writerow(newRow)
 
             #writer.writerow(None)
