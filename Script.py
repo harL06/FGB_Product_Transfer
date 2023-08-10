@@ -16,6 +16,9 @@ categories2 = list(df["EN_Category_2"])
 categories3 = list(df["EN_Category_3"])
 variant = list(df["EN_Variant"])
 OriginalStockLevel = list(df["Stock_Level"])
+
+NEWprices = []
+
 #print(OriginalStockLevel)
 #print(len(OriginalStockLevel))
 
@@ -37,10 +40,15 @@ if inputOption == "ean":
             elif findEAN in ean:
                 repeat == False
                 #print(df.loc[ean.index(findEAN), "EN_Title_Short"])
+                print(((df.loc[ean.index(findEAN), "EN_Title_Short"])))
                 productTitles.append((df.loc[ean.index(findEAN), "EN_Title_Short"]))
+                NEWprices.append(float(input("Enter sale price:\n> ")))
                 break
             else:
                 print("Item not found")
+            
+            
+            
                 
 
 elif inputOption == "sku":
@@ -63,9 +71,12 @@ elif inputOption == "sku":
                 #print(df.loc[ean.index(findEAN), "EN_Title_Short"])
                 print((df.loc[sku.index(findSKU), "EN_Title_Short"]))
                 productTitles.append((df.loc[sku.index(findSKU), "EN_Title_Short"]))
+                NEWprices.append(float(input("Enter sale price:\n> ")))
                 break
             else:
                 print("Item not found")
+            
+            
 
 
 elif inputOption == "category":
@@ -79,6 +90,7 @@ elif inputOption == "category":
                 if category == findCategory:
 #                     if productTitles.append(df.loc[i, "EN_Title_Short"]) != None:
                     productTitles.append((df.loc[i, "EN_Title_Short"]))
+                    NEWprices.append(float(input("Enter sale price:\n> ")))
                 i+=1
                         
             i=0
@@ -86,12 +98,14 @@ elif inputOption == "category":
                 if category == findCategory:
 #                     if productTitles.append(df.loc[i, "EN_Title_Short"]) != None:
                     productTitles.append((df.loc[i, "EN_Title_Short"]))
+                    NEWprices.append(float(input("Enter sale price:\n> ")))
                 i+=1
             i=0
             for category in categories3:
                 if category == findCategory:
 #                     if productTitles.append(df.loc[i, "EN_Title_Short"]) != None:
                     productTitles.append((df.loc[i, "EN_Title_Short"]))
+                    NEWprices.append(float(input("Enter sale price:\n> ")))
                 i+=1
             #print(productTitles)
             repeat == False
@@ -132,7 +146,7 @@ i = 0
 
 print("\n")
 print("Import and update these items on WooComerce Products with their matching new SKUs:\n")
-
+j=0
 for uniqueTitle in productTitles:
 #     if np.isnan(uniqueTitle) == False:
     if variant[title.index(uniqueTitle)] == "Default":
@@ -143,7 +157,9 @@ for uniqueTitle in productTitles:
         descLong.append(df.loc[title.index(uniqueTitle), "EN_Description_Long"])
         newSKU.append(df.loc[title.index(uniqueTitle), "SKU"])
         newEAN.append(df.loc[title.index(uniqueTitle), "EAN"])
-        price.append(df.loc[title.index(uniqueTitle), "Price"])
+        
+        price.append(NEWprices[j])
+        
         weight.append(int(df.loc[title.index(uniqueTitle), "Weight"])/1000)
         image.append(df.loc[title.index(uniqueTitle), "Images"])
         category1.append(df.loc[title.index(uniqueTitle), "EN_Category_1"])
@@ -165,7 +181,7 @@ for uniqueTitle in productTitles:
         usedMatrixTitles.append(uniqueTitle)
         
 
-        newParentSKU = "PRNT-" + str((df.loc[title.index(uniqueTitle), "SKU"]))[0:3]
+        newParentSKU = "PRNT-" + str((df.loc[title.index(uniqueTitle), "SKU"]))[0:]
         
         
         attribute = (((variant[title.index(uniqueTitle)]).split(" : "))[0])
@@ -201,7 +217,7 @@ for uniqueTitle in productTitles:
             category3.append(df.loc[title.index(uniqueTitle), "EN_Category_3"])   
             newSKU.append(df.loc[indice, "SKU"])
             newEAN.append(df.loc[indice, "EAN"])
-            price.append(df.loc[indice, "Price"])
+            price.append(NEWprices[j])
             weight.append(int(df.loc[indice, "Weight"])/1000)
             parentSKU.append(newParentSKU)
             stockLevel.append(df.loc[indice, "Stock_Level"])
@@ -273,7 +289,7 @@ for uniqueTitle in productTitles:
         descLong.append(df.loc[title.index(uniqueTitle), "EN_Description_Long"])
         newSKU.append(newParentSKU)
         newEAN.append(df.loc[title.index(uniqueTitle), "EAN"])
-        price.append(df.loc[title.index(uniqueTitle), "Price"])
+        price.append(NEWprices[j])
         weight.append(int(df.loc[title.index(uniqueTitle), "Weight"])/1000)
         image.append(df.loc[title.index(uniqueTitle), "Images"])
         category1.append(df.loc[title.index(uniqueTitle), "EN_Category_1"])
@@ -326,7 +342,7 @@ for uniqueTitle in productTitles:
         
         
             
-    
+    j += 1
     i += 1
     
     #print("NEW", len(Colour), len(MetaColour), len(Size), len(MetaSize), len(dataColour), len(dataSize))
@@ -375,15 +391,15 @@ while True:
                     writer.writerow(newRow)                
 
                 elif stockLevel[i] == "": 
-                    newRow = [parentSKU[i], newSKU[i], titles[i], descShort[i], descLong[i], "draft", price[i], (price[i] * .77), "instock", "", "", weight[i], image[i], productType[i], productCategory, "", MetaColour[i], Colour[i], dataColour[i], "", MetaSize[i], Size[i], dataSize[i]]
+                    newRow = [parentSKU[i], newSKU[i], titles[i], descShort[i], descLong[i], "draft", "", price[i], "instock", "", "", weight[i], image[i], productType[i], productCategory, "", MetaColour[i], Colour[i], dataColour[i], "", MetaSize[i], Size[i], dataSize[i]]
                     writer.writerow(newRow)
                     
                 elif int(stockLevel[i]) > 0:
-                    newRow = [parentSKU[i], newSKU[i], titles[i], descShort[i], descLong[i], "publish", price[i], (price[i] * .77), "instock", "", "", weight[i], image[i], productType[i], productCategory, "", MetaColour[i], Colour[i], dataColour[i], "", MetaSize[i], Size[i], dataSize[i]]
+                    newRow = [parentSKU[i], newSKU[i], titles[i], descShort[i], descLong[i], "publish", "", price[i], "instock", "", "", weight[i], image[i], productType[i], productCategory, "", MetaColour[i], Colour[i], dataColour[i], "", MetaSize[i], Size[i], dataSize[i]]
                     writer.writerow(newRow)
                 
                 else:
-                    newRow = [parentSKU[i], newSKU[i], titles[i], descShort[i], descLong[i], "draft", price[i], (price[i] * .77), "instock", "", "", weight[i], image[i], productType[i], productCategory, "", MetaColour[i], Colour[i], dataColour[i], "", MetaSize[i], Size[i], dataSize[i]]
+                    newRow = [parentSKU[i], newSKU[i], titles[i], descShort[i], descLong[i], "draft", "", price[i], "instock", "", "", weight[i], image[i], productType[i], productCategory, "", MetaColour[i], Colour[i], dataColour[i], "", MetaSize[i], Size[i], dataSize[i]]
                     writer.writerow(newRow)
 
             #writer.writerow(None)
