@@ -371,7 +371,7 @@ while True:
                     if str(category3[i]) != "nan":
                         productCategory = productCategory +"|"+ str(category3[i])
                 if "PRNT" in str(newSKU[i]): 
-                    newRow = [parentSKU[i], newSKU[i], titles[i], descShort[i], descLong[i], "publish", price[i], (price[i] * .8), "instock", "", "", weight[i], image[i], productType[i], productCategory, "", MetaColour[i], Colour[i], dataColour[i], "", MetaSize[i], Size[i], dataSize[i]]
+                    newRow = [parentSKU[i], newSKU[i], titles[i], descShort[i], descLong[i], "publish", "", "", "instock", "", "", weight[i], image[i], productType[i], productCategory, "", MetaColour[i], Colour[i], dataColour[i], "", MetaSize[i], Size[i], dataSize[i]]
                     writer.writerow(newRow)                
 
                 elif stockLevel[i] == "": 
