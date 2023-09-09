@@ -4,7 +4,7 @@ In this repository, I created a python script to transfer data from our Lightspe
 Project Highlights:
 
 Efficient Data Conversion:
-I faced the challenge of synchronizing our Lightspeed inventory with the Woocommerce platform for our exclusive limited-time deals website. This required a robust data conversion tool that could handle the intricacies of product names, photos, descriptions, and item codes.
+I faced the challenge of synchronizing our Lightspeed inventory with the Woocommerce platform. This required a robust data conversion tool that could handle the intricacies of product names, photos, descriptions, and item codes.
 
 Python Script for Data Transformation:
 The Python script was designed to convert and format data from Lightspeed into a structure compatible with Woocommerce. While the code may lack extensive comments and a polished structure, it perfectly serves its intended purpose.
